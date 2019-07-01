@@ -1,4 +1,4 @@
-# davidyujia.Base58
+# Base58
 
 without Base58Check
 
@@ -8,7 +8,7 @@ without Base58Check
 
 var str = Encoding.UTF8.GetBytes("Hello");
 
-var base58String = davidyujia.Base58.Encode(str);
+var base58String = Base58.Encode(str);
 
 Console.Write(base58String);
 //result: "9Ajdvzr"
@@ -19,7 +19,7 @@ Console.Write(base58String);
 
 ```cs
 
-var bytes = davidyujia.Base58.Encode("9Ajdvzr");
+var bytes = Base58.Encode("9Ajdvzr");
 
 var str = Encoding.UTF8.GetString(bytes);
 
