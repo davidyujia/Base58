@@ -6,6 +6,11 @@ using System.Text;
 
 namespace davidyujia.Base58
 {
+    public enum Base58Type
+    {
+        None
+    }
+
     public sealed class Base58
     {
         private static readonly char[] base58Table = {
@@ -17,8 +22,18 @@ namespace davidyujia.Base58
             'n','o','p','q','r','s','t','u','v',
             'w','x','y','z' };
 
-        public static string Encode(byte[] data)
+        public static string Encode(byte[] data, Base58Type type = Base58Type.None)
         {
+            if (data == null)
+            {
+                return null;
+            }
+
+            if (!data.Any())
+            {
+                return string.Empty;
+            }
+
             var sum = data.Aggregate<byte, BigInteger>(0, (current, b) => current * 256 + b);
 
             var sb = new StringBuilder();
@@ -31,8 +46,17 @@ namespace davidyujia.Base58
             return new string(sb.ToString().Reverse().ToArray());
         }
 
-        public static byte[] Decode(string encryptedString)
+        public static byte[] Decode(string encryptedString, Base58Type type = Base58Type.None)
         {
+            if (encryptedString == null)
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(encryptedString))
+            {
+                return new byte[0];
+            }
             var sum = encryptedString.ToArray().Aggregate<char, BigInteger>(0, (current, c) => (current * 58) + Array.IndexOf(base58Table, c));
 
             var bit8 = 0;

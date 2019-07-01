@@ -38,12 +38,31 @@ namespace davidyujia.Base58.Tests
             }
         }
 
+        [TestMethod]
+        public void TestMethod3()
+        {
+            for (var i = 0; i < 100000; i++)
+            {
+                var testString = GetRandomString(i);
+
+                var bytes = Encoding.UTF8.GetBytes(testString);
+
+                var encode = davidyujia.Base58.Base58.Encode(bytes);
+
+                var decode = davidyujia.Base58.Base58.Decode(encode);
+
+                var str = Encoding.UTF8.GetString(decode);
+
+                Assert.AreEqual(testString, str);
+            }
+        }
+
         public static string GetRandomString(int length)
         {
             var str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             var next = new Random();
             var builder = new StringBuilder();
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < length; i++)
             {
                 builder.Append(str[next.Next(0, str.Length)]);
             }

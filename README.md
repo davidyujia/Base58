@@ -1,26 +1,29 @@
-# Configuration
+# davidyujia.Base58
 
-## Set Environment
+without Base58Check
+
+## Base58 Encode
 
 ```cs
-Config.GetEnvironmentFunc = () => "Debug";
-//or
-Config.Environment = "Debug";
+
+var str = Encoding.UTF8.GetBytes("Hello");
+
+var base58String = davidyujia.Base58.Encode(str);
+
+Console.Write(base58String);
+//result: "9Ajdvzr"
+
 ```
 
-## Get Configuration
+## Base58 Decode
 
 ```cs
-// default load from appsettings.json
-var configValue = Config.Load();
-//or
-var customConfigValueCustom = Config.Load("custom.json");
-```
 
-## Get Value
+var bytes = davidyujia.Base58.Encode("9Ajdvzr");
 
-```cs
-var configValue1 = configValue["Key"];
-//or
-var configValue2 = configValue["ConnectionStrings"]["DefaultConnection"];
+var str = Encoding.UTF8.GetString(bytes);
+
+Console.Write(str);
+//result: "Hello"
+
 ```
