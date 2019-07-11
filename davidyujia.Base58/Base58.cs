@@ -73,4 +73,16 @@ namespace davidyujia.Base58
             return list.ToArray();
         }
     }
+
+    public sealed class Base58Check
+    {
+        public static string Encode(byte[] data, Base58Type type = Base58Type.None)
+        {
+            return Base58.Encode(data, type);
+        }
+        public static byte[] Decode(string encryptedString, Base58Type type = Base58Type.None)
+        {
+            return Base58.Decode(encryptedString, type);
+        }
+    }
 }
