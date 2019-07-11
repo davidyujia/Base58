@@ -13,7 +13,7 @@ namespace davidyujia.Base58
 
     public sealed class Base58
     {
-        private static readonly char[] base58Table = {
+        internal static readonly char[] base58Table = {
             '1','2','3','4','5','6','7','8','9',
             'A','B','C','D','E','F','G','H','J',
             'K','L','M','N','P','Q','R','S','T',
@@ -21,6 +21,30 @@ namespace davidyujia.Base58
             'd','e','f','g','h','i','j','k','m',
             'n','o','p','q','r','s','t','u','v',
             'w','x','y','z' };
+
+        internal static char[] EncodeToCharArray(byte[] data, Base58Type type = Base58Type.None)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            if (!data.Any())
+            {
+                return new char[0];
+            }
+
+            var sum = data.Aggregate<byte, BigInteger>(0, (current, b) => current * 256 + b);
+
+            var sb = new StringBuilder();
+            do
+            {
+                sum = BigInteger.DivRem(sum, 58, out var remainder);
+                sb.Append(base58Table[(int)remainder]);
+            } while (sum != 0);
+
+            return sb.ToString().Reverse().ToArray();
+        }
 
         public static string Encode(byte[] data, Base58Type type = Base58Type.None)
         {
@@ -43,7 +67,7 @@ namespace davidyujia.Base58
                 sb.Append(base58Table[(int)remainder]);
             } while (sum != 0);
 
-            return new string(sb.ToString().Reverse().ToArray());
+            return new string(EncodeToCharArray(data, type));
         }
 
         public static byte[] Decode(string encryptedString, Base58Type type = Base58Type.None)
@@ -74,12 +98,38 @@ namespace davidyujia.Base58
         }
     }
 
+    public enum BitcoinCheckType
+    {
+        BitcoinAddress = 0x00,
+        PayToScriptHashAddress = 0x05,
+        BitcoinTestnetAddress = 0x6F,
+        PrivateKeyWIF = 0x80,
+        BIP38EncryptedPrivateKey = 0x0142,
+        BIP32ExtendedPublicKey = 0x0488B21E
+    }
+
     public sealed class Base58Check
     {
-        public static string Encode(byte[] data, Base58Type type = Base58Type.None)
+        public static string Encode(byte[] data, BitcoinCheckType type = BitcoinCheckType.BitcoinAddress)
         {
-            return Base58.Encode(data, type);
+            var cb = Base58.EncodeToCharArray(data);
+
+            byte[] bytes = BitConverter.GetBytes((int)type);
+
+
+
+            return new string(cb);
         }
+
+        public static string Encode(byte[] data, int checkType = 0)
+        {
+            var cb = Base58.EncodeToCharArray(data);
+
+            byte[] bytes = BitConverter.GetBytes(checkType);
+
+            return new string(cb);
+        }
+
         public static byte[] Decode(string encryptedString, Base58Type type = Base58Type.None)
         {
             return Base58.Decode(encryptedString, type);
